@@ -1,0 +1,95 @@
+#include<stdio.h>
+#include<vector>
+#include<string.h>
+
+using namespace std;
+
+vector<int> primes;
+
+void getPrime(){
+	bool mark[48000];
+	for(int i=2;i<47000;i++){
+		
+		if(mark[i] == false){
+			for(unsigned long long j=i*i;j<47000;j+=i){
+				mark[j] = true;
+			}
+			primes.push_back(i);
+		}
+	}
+}
+
+int main(){
+	
+	getPrime();
+	
+	long long a,b;
+	
+	while(scanf("%lld %lld",&a,&b) != EOF){
+  
+	  long long minA,minB;
+	  long long maxA,maxB;
+	  long long min = 0, max = 0;
+	  long long tempMin = 0, tempMax = 0;
+	  
+	  bool numPrimes[1000001];
+	  
+	  for(int x : primes){
+		
+		if(x > b) break;
+		
+		long long start;
+		if(x < a){
+			start = a / x * x;
+		}else{
+			start = x * x;
+		}
+		
+		for(long long i = start;i<=b;i+=x){
+			if(i >= a)
+			numPrimes[i-a] = true;
+		}
+	  }
+	  
+	  int count = 0;
+	  for(long long i=a;i<=b;i++){
+	  	if(numPrimes[i-a] == false && i != 1){
+	  		if(tempMin == 0 && tempMax == 0){
+			     tempMin = i;
+			     tempMax = i;
+		    }
+		    else{
+			     int cekMin = i - tempMin;
+			     int cekMax = i - tempMax;
+			     
+			     if(cekMin < min || min == 0){
+			      min = cekMin;
+			      minA = tempMin;
+			      minB = i;
+			     }
+			     if(cekMax > max || max == 0){
+			      max = cekMax;
+			      maxA = tempMax;
+			      maxB = i;
+			     }
+			     
+			     tempMin = i;
+			     tempMax = i;
+			     
+			}
+		  }
+			else{
+	   			numPrimes[i-a] = false;
+	   		}
+	  }
+  
+  if(min != 0){
+   printf("%lld,%lld are closest, %d,%d are most distant.\n",minA,minB,maxA,maxB);
+  }
+  else{
+   printf("There are no adjacent primes.\n");
+  }
+	
+}
+	return 0;
+}
